@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Dr Neil's Stuff</title>
+
+    <style type="text/css">
+        .modal {
+            font-size: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: absolute;
+            /* Stay in place */
+            z-index: 1001;
+            /* Sit on top */
+            padding-top: 80px;
+            /* Location of the box */
+            left: 0px;
+            top: 0px;
+            right: 0px;
+            /* Full width */
+            bottom: 0px;
+            /* Full width */
+            overflow: auto;
+            /* Enable scroll if needed */
+            opacity: 0.4;
+            background-color: white;
+            /* Black w/ opacity */
+        }
+        /* Modal Dimmer */
+        
+        .modal-blocker {
+            position: absolute;
+            padding: 120px;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            background-color: rgb(0, 0, 0);
+            z-index: 1000;
+            /* Sit on top */
+            opacity: 0.6;
+        }
+        /* Modal Content */
+        
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            width: 70%;
+            z-index: 1002;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            -webkit-animation-name: fadeIn;
+            -webkit-animation-duration: 0.4s;
+            animation-name: fadeIn;
+            animation-duration: 0.4s
+        }
+        
+        .modal-header {
+            padding: 2px 6px;
+            font-size: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+        }
+        
+        .modal-body {
+            padding: 2px 16px;
+            display: block;
+        }
+        
+        .modal-btn {
+            position: relative;
+            font-size: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border: none;
+            /* Remove borders */
+            color: black;
+            border: 2px solid #186904;
+            background-color: #a6ff90;
+            padding: 6px 14px;
+            margin: 4px 2px;
+            border-radius: 4px;
+            left: -15px;
+            cursor: pointer;
+            /* Add a pointer cursor on mouse-over */
+        }
+        
+        .modal-btn:hover {
+            opacity: 0.6;
+        }
+        
+        .modal-cancel-btn {
+            position: relative;
+            border: none;
+            /* Remove borders */
+            color: white;
+            font-size: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f44336;
+            /* Add a backgriund color */
+            padding: 6px 14px;
+            margin: 4px 2px;
+            border-radius: 4px;
+            left: -15px;
+            cursor: pointer;
+            /* Add a pointer cursor on mouse-over */
+        }
+        
+        .modal-cancel-btn:hover {
+            opacity: 0.6;
+        }
+        
+        .modal-label {
+            color: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+        }
+        
+        .modal-entry {
+            width: 100%;
+            /* Full width */
+            height: 12px;
+            width: 350px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-bottom: 0px;
+        }
+        /* Add animation (fade in the popup) */
+        
+        @-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        /* The Close Button */
+        
+        .close {
+            color: white;
+            float: right;
+            font-size: 24px;
+        }
+        
+        .close:hover,
+        .close:focus {
+            opacity: 0.6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .modal-scroll-panel::-webkit-scrollbar-track:vertical {
+            width: 8px;
+            margin: 1px;
+            background: rgba(240, 240, 240, 0.0);
+            border-radius: 4px;
+        }
+        
+        .modal-scroll-panel::-webkit-scrollbar-track:horizontal {
+            height: 8px;
+            margin: 1px;
+            background: rgba(150, 88, 88, 0.0);
+            border-radius: 4px;
+        }
+        
+        .modal-scroll-panel::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+            margin: 1px;
+            background: rgba(0, 0, 0, 0.0);
+            border-radius: 4px;
+        }
+        
+        .modal-scroll-panel::-webkit-scrollbar-thumb {
+            border: 1px solid rgb(134, 134, 134);
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+    </style>
+
+    <script type="text/template" id="pdf">
+
+        <div class="model" id="pdf-view-dialog" style="display:inline-block">
+            <div style="position:absolute; padding:120px; top:0px; bottom:0px; left:0px; right:0px;">
+                <div class="modal-content" style="margin-top:40px; width:730px; height:600px">
+                    <div class="modal-header" style="background-color: black ">
+                        <span class="close" id="close" onclick="close_model_panel()">&times;</span>
+                        <h2 id="pdf-dialog_title ">PDF Viewer</h2>
+                    </div>
+                    <div class="modal-body" style="background: rgba(0,0,0,0.0.5);">
+                        <iframe id="pdf-viewer" src="<%=file%>" title="webviewer" frameborder="0" width="700" height="540"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="player">
+        <div class="model" id="player-dialog" style="display:inline-block">
+            <div style="position:absolute; padding:120px; top:0px; bottom:0px; left:0px; right:0px; background: light-grey;">
+                <div class="modal-content" style="margin-top:20px; width:<%=width%>px; height:<%=height%>px;">
+                    <div class="modal-header " style="background-color: black ">
+                        <span class="close" id="close" onclick="close_model_panel()">&times;</span>
+                        <h2 id="viewer-dialog_title">
+                            <%=title%>
+                        </h2>
+                    </div>
+                    <div class="modal-body" style="background: rgba(0,0,0,0.0.5); margin-top:8px; margin-left:auto; margin-right:auto;">
+                        <iframe id="player-viewer" src="<%=url%>" title="player" frameborder="0" width="<%=viewport-width%>" height="<%=viewport-height%>" style="transform:scale(<%=scale%>); margin-top:<%=margin-top%>px;  margin-left:<%=margin-left%>px;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script>
+        /*  Tables and Lists*/
+
+        var repositories = [];
+        var views = [];
+    </script>
+    <script>
+        function play(name, url, height, width, scale) {
+            var element = document.getElementById("player");
+
+            var template = element.text;
+            var adjustment = parseFloat(scale);
+            var adjustedWidth = parseInt(width) * adjustment
+            var adjustedHeight = parseInt(height) * adjustment
+
+            var viewportWidth = parseInt(width) - 30;
+            var viewportHeight = parseInt(height) - 70;
+            var marginTop = 0;
+            var marginLeft = 0;
+
+            if (adjustment != 1.0) {
+                marginTop = (height - adjustedHeight) * scale;
+                marginLeft = (width - adjustedWidth) * scale;
+
+                marginTop -= 15;
+                adjustedHeight += 30;
+
+            }
+
+            var html = template.replace('<%=url%>', url).
+            replace('<%=title%>', name).
+            replace('<%=width%>', adjustedWidth).
+            replace('<%=height%>', adjustedHeight).
+            replace('<%=viewport-width%>', viewportWidth).
+            replace('<%=viewport-height%>', viewportHeight).
+            replace('<%=scale%>', parseFloat(scale)).
+            replace('<%=margin-top%>', '-' + marginTop).
+            replace('<%=margin-left%>', '-' + marginLeft);
+
+            document.getElementById('viewer').innerHTML = html;
+
+        }
+
+        function display(definitions, view, callback, filter, repository) {
+            var element = document.getElementById("template");
+            var template = element.text;
+            var cardValue = "";
+
+            for (definition in definitions) {
+                if (filter == '*' || filter == definitions[definition].category) {
+                    cardValue += template.replace(/<%=callback%>/g, callback).
+                    replace(/<%=image%>/g, definitions[definition].image).
+                    replace(/<%=label%>/g, definitions[definition].label).
+                    replace(/<%=repository%>/g, repository).
+                    replace(/<%=view%>/g, view).
+                    replace(/<%=id%>/g, definition);
+                }
+            }
+            var card = document.getElementById(view);
+
+            card.innerHTML = cardValue;
+
+        }
+
+        function show(file) {
+            var element = document.getElementById("pdf");
+            var template = element.text;
+
+            var html = template.replace('<%=file%>', file);
+
+            document.getElementById('viewer').innerHTML = html;
+
+        }
+
+        function displayDetails(id, repositoryId, view) {
+            var element = document.getElementById("view");
+            var template = element.text;
+            var entry = parseInt(id);
+            var repository = repositories[parseInt(repositoryId)];
+            var description = "";
+
+            for (var line in repository[entry].description) {
+                description += repository[entry].description[line];
+            }
+
+            var html = template.replace(/<%=name%>/g, repository[entry].label).
+            replace(/<%=description%>/g, description);
+
+            if ('display' in repository[entry]) {
+                html = html.replace(/<%=display%>/g, repository[entry].display.image);
+                html = html.replace(/<%=width%>/g, repository[entry].display.width);
+                html = html.replace(/<%=height%>/g, repository[entry].display.height);
+                html = html.replace(/<%=border%>/g, repository[entry].display.border);
+                html = html.replace(/<%=margin%>/g, repository[entry].display.margin);
+            }
+
+            var notes = "";
+
+            if ('notes' in repository[entry]) {
+                for (var note in repository[entry].notes) {
+                    notes += repository[entry].notes[note];
+                }
+
+            }
+
+            html = html.replace(/<%=notes%>/g, notes);
+
+            var details = document.getElementById("details");
+
+            details.innerHTML = html;
+
+            var github = document.getElementById("github");
+
+            if ('github' in repository[entry]) {
+                github.href = `javascript:window.open('${repository[entry].github}', '_blank').focus(); `;
+                github.style.display = 'inline-block';
+            } else {
+                github.style.display = 'none';
+            }
+
+            var download = document.getElementById("download");
+            var show = document.getElementById("show");
+
+            show.style.display = 'none';
+            download.style.display = 'none';
+
+
+            document.getElementById("actions").style.display = "inline-block";
+
+            var elements = document.getElementsByClassName("card");
+            for (var element = 0; element < elements.length; element++) {
+                elements[element].style.cssText = "";
+            }
+
+            document.getElementById(`card-${view}-${repositoryId}-${id}`).style.cssText =
+                "color:red; background-color:rgb(206, 255, 206);";
+
+        }
+
+        document.addEventListener("DOMContentLoaded", (event) => {
+
+            var CALLBACKS = {
+
+                onclick: function(node) {
+
+                    function show(id) {
+                        var items = document.getElementsByClassName('view');
+
+                        for (var item = 0; item < items.length; item++) {
+
+                            if (items[item].id == id) {
+                                items[item].style.display = "inline-block"
+                            } else {
+                                items[item].style.display = "none"
+                            }
+
+                        }
+
+                    }
+
+                    document.getElementById("details").innerHTML = "";
+                    document.getElementById("actions").style.display = "none";
+
+                    var elements = document.getElementsByClassName("card");
+                    for (var element = 0; element < elements.length; element++) {
+                        elements[element].style.cssText = "";
+                    }
+
+                    if (node.text == 'Stuff') {
+
+                        show('stuff');
+
+                        var notifications = document.getElementById("notifications").text;
+
+                        document.getElementById("details").innerHTML = notifications;
+
+                    } else if (node.text in views) {
+
+                        show(views[node.text]);
+
+                    }
+
+                },
+
+                addchild: function(node) {},
+
+                removechild: function(node) {},
+
+                editnode: function(node) {},
+
+                oncontextmenu: function(node) {
+                    return false;
+                }
+
+            }
+
+        });
+    </script>
+    <script>
+        function help() {
+            document.getElementById('help-dialog').style.display = "inline-block";
+        }
+
+        function close_model_panel() {
+            var dialogs = document.getElementsByClassName('model')
+
+            for (var dialog in dialogs) {
+                if (dialogs[dialog].style) {
+                    dialogs[dialog].style.display = "none";
+                }
+
+            }
+        }
+    </script>
+</head>
+
+<body style=" overflow:hidden">
+    <div style="position:absolute; top:0px; height:60px; left:0px; right:0px; background-color:rgb(36,41,46)">
+        <div style="position:absolute; top:-4px; left:10px; font-size:48px;">&#129490;</div>
+        <div style="position:absolute; top:-2px; height:60px; left:80px; right:0px; background-color:rgb(36,41,46)">
+            <h1 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #FFFFFF; font-size:24px;">
+                &nbsp;Dr.&nbsp;Neil's - Home of Stuff - Desktop Stuffer</h1>
+        </div>
+        <div style="position:absolute; top:18px; height:60px; right:4px;">
+            <a href="javascript:help()" style="cursor:pointer; margin-top:-4px; margin-left:10px; width:16px; height:16px;">
+                <svg style="width: 24px; height: 24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z" fill="white"/></svg>
+            </a>
+        </div>
+    </div>
+    <div id="stuff" style="position: absolute; top: 70px; bottom: 10px; left: 10px; right: 310px; border: 1px solid rgba(0, 0, 0, 0.2); background-color: rgb(255, 255, 255); ">
+    </div>
+    <div id="cards" class="view" style="position: absolute; top: 70px; bottom: 10px; left: 220px; right: 310px; border: 1px solid rgba(0, 0, 0, 0.2); flex-wrap: wrap; align-content: flex-start; background-color: rgb(255, 255, 255); overflow: auto; display:none;">
+        <div id="cardbox" class="cardbox"> </div>
+    </div>
+    <div id="summary" style="position:absolute; top: 70px; bottom:10px; width:290px; right:10px; border:1px solid rgba(0,0,0,0.2);	background-color:rgb(255, 255, 255);">
+    </div>
+    <div class="model" id="help-dialog" style="display:none">
+        <div style="position:absolute; padding:120px; top:0px; bottom:0px; left:0px; right:0px;">
+            <div class="modal-content" style="margin-top:40px; width:540px;">
+                <div class="modal-header" style="background-color: black">
+                    <span class="close" id="close" onclick="close_model_panel()">&times;</span>
+                    <h2 id="dialog_title">Add a package</h2>
+                </div>
+                <div class="modal-body" id="text" style="background: rgba(0,0,0,0.0.5); height:400px;">
+                    <div id="getting_started_panel" class="modal-scroll-panel" style="position:absolute; top:50px; bottom:36px; left:0px; right:0px; overflow:auto; ">
+                        <table style="margin:5px;" cellpadding="10">
+                            <tr>
+                                <td><label class="modal-label"></label>Package URL</td>
+                                <td><input class="modal-entry" id="package-url" type="text" name="package-url" placeholder="URL..." required></input>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewer">
+    </div>
+
+</body>
+
+</html>

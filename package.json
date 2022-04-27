@@ -1,0 +1,47 @@
+{
+    "name": "desktop-stuffer",
+    "version": "1.0.0",
+    "description": "Simple Desktop",
+    "main": "main.js",
+    "scripts": {
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder --publish never",
+        "start": "electron ."
+    },
+    "build": {
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64",
+                        "ia32"
+                    ]
+                }
+            ]
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/thesourorange/neilstuff/desktop-stuffer.git"
+    },
+    "keywords": [
+        "Electron",
+        "utility"
+    ],
+    "author": "GitHub",
+    "license": "CC0-1.0",
+    "dependencies": {
+        "mime": "^3.0.0",
+        "@fortawesome/fontawesome-free": "^5.13.0"
+    },
+    "devDependencies": {
+        "electron": "^18.1.0",
+        "electron-builder": "^23.0.3",
+        "node": "^17.7.2"
+    },
+    "bugs": {
+        "url": "https://github.com/thesourorange/neilstuff/desktop-stuffer"
+    },
+    "homepage": "https://github.com/thesourorange/neilstuff/desktop-stuffer#readme"
+}
