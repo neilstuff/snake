@@ -33,7 +33,7 @@
     "license": "CC0-1.0",
     "dependencies": {
         "mime": "^3.0.0",
-        "@fortawesome/fontawesome-free": "^5.13.0"
+        "jszip": "^3.9.1"
     },
     "devDependencies": {
         "electron": "^18.1.0",

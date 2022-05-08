@@ -123,10 +123,17 @@
         .modal-entry {
             width: 100%;
             /* Full width */
-            height: 12px;
+            height: 16px;
             width: 350px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin-bottom: 0px;
+            border: none;
+            border-bottom: solid 1px black;
+        }
+        
+        .modal-entry:focus {
+            outline: none;
+            border-bottom: solid 1px orange;
         }
         /* Add animation (fade in the popup) */
         
@@ -233,70 +240,35 @@
         var views = [];
     </script>
     <script>
-        function play(name, url, height, width, scale) {
-            var element = document.getElementById("player");
+        function install_package() {
+            var element = document.getElementById("package-url");
 
-            var template = element.text;
-            var adjustment = parseFloat(scale);
-            var adjustedWidth = parseInt(width) * adjustment
-            var adjustedHeight = parseInt(height) * adjustment
-
-            var viewportWidth = parseInt(width) - 30;
-            var viewportHeight = parseInt(height) - 70;
-            var marginTop = 0;
-            var marginLeft = 0;
-
-            if (adjustment != 1.0) {
-                marginTop = (height - adjustedHeight) * scale;
-                marginLeft = (width - adjustedWidth) * scale;
-
-                marginTop -= 15;
-                adjustedHeight += 30;
-
-            }
-
-            var html = template.replace('<%=url%>', url).
-            replace('<%=title%>', name).
-            replace('<%=width%>', adjustedWidth).
-            replace('<%=height%>', adjustedHeight).
-            replace('<%=viewport-width%>', viewportWidth).
-            replace('<%=viewport-height%>', viewportHeight).
-            replace('<%=scale%>', parseFloat(scale)).
-            replace('<%=margin-top%>', '-' + marginTop).
-            replace('<%=margin-left%>', '-' + marginLeft);
-
-            document.getElementById('viewer').innerHTML = html;
+            window.api.retrieve(element.value);
 
         }
 
-        function display(definitions, view, callback, filter, repository) {
+
+        window.api.on('retrieve-complete', (channel, args) => {
+            var manifest = JSON.parse(args);
+
+            close_model_panel();
+
+        });
+
+        function display(manifest, view, callback) {
             var element = document.getElementById("template");
             var template = element.text;
             var cardValue = "";
 
-            for (definition in definitions) {
-                if (filter == '*' || filter == definitions[definition].category) {
-                    cardValue += template.replace(/<%=callback%>/g, callback).
-                    replace(/<%=image%>/g, definitions[definition].image).
-                    replace(/<%=label%>/g, definitions[definition].label).
-                    replace(/<%=repository%>/g, repository).
-                    replace(/<%=view%>/g, view).
-                    replace(/<%=id%>/g, definition);
-                }
-            }
+            cardValue = template.replace(/<%=callback%>/g, callback).
+            replace(/<%=image%>/g, manifest.image).
+            replace(/<%=label%>/g, manifest.label).
+            replace(/<%=view%>/g, view).
+            replace(/<%=id%>/g, definition);
+
             var card = document.getElementById(view);
 
             card.innerHTML = cardValue;
-
-        }
-
-        function show(file) {
-            var element = document.getElementById("pdf");
-            var template = element.text;
-
-            var html = template.replace('<%=file%>', file);
-
-            document.getElementById('viewer').innerHTML = html;
 
         }
 
@@ -337,21 +309,11 @@
 
             details.innerHTML = html;
 
-            var github = document.getElementById("github");
-
-            if ('github' in repository[entry]) {
-                github.href = `javascript:window.open('${repository[entry].github}', '_blank').focus(); `;
-                github.style.display = 'inline-block';
-            } else {
-                github.style.display = 'none';
-            }
-
             var download = document.getElementById("download");
             var show = document.getElementById("show");
 
             show.style.display = 'none';
             download.style.display = 'none';
-
 
             document.getElementById("actions").style.display = "inline-block";
 
@@ -365,64 +327,7 @@
 
         }
 
-        document.addEventListener("DOMContentLoaded", (event) => {
-
-            var CALLBACKS = {
-
-                onclick: function(node) {
-
-                    function show(id) {
-                        var items = document.getElementsByClassName('view');
-
-                        for (var item = 0; item < items.length; item++) {
-
-                            if (items[item].id == id) {
-                                items[item].style.display = "inline-block"
-                            } else {
-                                items[item].style.display = "none"
-                            }
-
-                        }
-
-                    }
-
-                    document.getElementById("details").innerHTML = "";
-                    document.getElementById("actions").style.display = "none";
-
-                    var elements = document.getElementsByClassName("card");
-                    for (var element = 0; element < elements.length; element++) {
-                        elements[element].style.cssText = "";
-                    }
-
-                    if (node.text == 'Stuff') {
-
-                        show('stuff');
-
-                        var notifications = document.getElementById("notifications").text;
-
-                        document.getElementById("details").innerHTML = notifications;
-
-                    } else if (node.text in views) {
-
-                        show(views[node.text]);
-
-                    }
-
-                },
-
-                addchild: function(node) {},
-
-                removechild: function(node) {},
-
-                editnode: function(node) {},
-
-                oncontextmenu: function(node) {
-                    return false;
-                }
-
-            }
-
-        });
+        document.addEventListener("DOMContentLoaded", (event) => {});
     </script>
     <script>
         function help() {
@@ -440,6 +345,12 @@
             }
         }
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            window.api.load();
+
+        });
+    </script>
 </head>
 
 <body style=" overflow:hidden">
@@ -447,7 +358,7 @@
         <div style="position:absolute; top:-4px; left:10px; font-size:48px;">&#129490;</div>
         <div style="position:absolute; top:-2px; height:60px; left:80px; right:0px; background-color:rgb(36,41,46)">
             <h1 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #FFFFFF; font-size:24px;">
-                &nbsp;Dr.&nbsp;Neil's - Home of Stuff - Desktop Stuffer</h1>
+                Desktop Stuffer</h1>
         </div>
         <div style="position:absolute; top:18px; height:60px; right:4px;">
             <a href="javascript:help()" style="cursor:pointer; margin-top:-4px; margin-left:10px; width:16px; height:16px;">
@@ -469,7 +380,7 @@
                     <span class="close" id="close" onclick="close_model_panel()">&times;</span>
                     <h2 id="dialog_title">Add a package</h2>
                 </div>
-                <div class="modal-body" id="text" style="background: rgba(0,0,0,0.0.5); height:400px;">
+                <div class="modal-body" id="text" style="background: rgba(0,0,0,0.0.5); height:150px;">
                     <div id="getting_started_panel" class="modal-scroll-panel" style="position:absolute; top:50px; bottom:36px; left:0px; right:0px; overflow:auto; ">
                         <table style="margin:5px;" cellpadding="10">
                             <tr>
@@ -479,6 +390,10 @@
                             </tr>
                         </table>
                     </div>
+                </div>
+                <div style="padding: 10px; margin-left:10px;">
+                    <button class="modal-btn" id="install-package" onclick="install_package();">Install</button>
+                    <button class="modal-cancel-btn" id="cancel-install" onclick="close_model_panel();">Cancel</button>
                 </div>
             </div>
         </div>
