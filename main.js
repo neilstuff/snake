@@ -66,13 +66,16 @@ app.on('ready', () => {
     protocol.registerBufferProtocol('html', function(request, callback) {
         let pathName = (new URL(request.url).pathname).substring(os.platform() == 'win32' ? 1 : 0);
         let extension = path.extname(pathName);
+        let searchParams = (new URL(request.url).searchParams)
 
-        if (extension == "") {
-            extension = ".js";
-            pathName += extension;
+        console.log(searchParams);
+
+        if (searchParams && searchParams.get('scope')) {
+            console.log("im here b");
+            console.log(searchParams.get('scope'));
+        } else {
+            return callback({ data: fs.readFileSync(path.normalize(pathName)), mimeType: mime.getType(extension) });
         }
-
-        return callback({ data: fs.readFileSync(path.normalize(pathName)), mimeType: mime.getType(extension) });
 
     });
 
@@ -193,7 +196,7 @@ ipcMain.on('load', async function(event, arg) {
 
                     manifest["filename"] = filename;
                     manifest["base"] = file.replace(".zip", "");
-
+                    manifest["path"] = path.join("packages", file);
 
                     accept(manifest);
 
@@ -213,7 +216,6 @@ ipcMain.on('load', async function(event, arg) {
     }
 
     console.log("Load Completed...", JSON.stringify(manifests));
-
 
     event.sender.send('load-complete', JSON.stringify(manifests));
 
