@@ -243,12 +243,74 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+        
+        .details {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 5px;
+        }
+        
+        .center {
+            border-top: 2px solid #DDDDDD;
+            border-bottom: 2px solid #DDDDDD;
+            text-align: center;
+        }
+        
+         ::-webkit-scrollbar-track:vertical {
+            width: 12px;
+            background: rgba(240, 240, 240, 0.05);
+            border-radius: 4px;
+        }
+        
+         ::-webkit-scrollbar-track:horizontral {
+            height: 12px;
+            background: rgba(240, 240, 240, 0.05);
+            border-radius: 4px;
+        }
+        
+         ::-webkit-scrollbar {
+            width: 11px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 5px;
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            border: 1px solid rgb(134, 134, 134);
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 5px;
+        }
     </style>
 
     <script type="text/template" id="template">
-        <div id="card-<%=view%>-<%=repository%>-<%=id%>" class="card" onclick="<%=callback%>('<%=id%>', '<%=repository%>', '<%=view%>');">
+        <div id="card-<%=view%>-<%=id%>" class="card" onclick="<%=callback%>('<%=id%>', '<%=view%>');">
             <img src="<%=image%>"></img>
             <label value="<%=label%>"><%=label%></label>
+        </div>
+    </script>
+
+    <script type="text/template" id="view">
+        <div class="details">
+            <div class="center">
+                <h2>
+                    <%=name%>
+                </h2>
+            </div>
+            <div style="position:absolute; top:90px; left:0px; right:0x; bottom: 0px; overflow:auto;">
+                <div style="margin:10px;">
+                    <div>
+                        <p>
+                            <%=description%>
+                        </p>
+                    </div>
+                    <div style="margin-top:<%=display%>;">
+                        <img src="<%=display%>" style="display:block; <%=border%>; margin-left:auto; margin-right:auto; width:<%=width%>; height:<%=height%>;" </img>
+                    </div>
+                    <div>
+                        <p>
+                            <%=notes%>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </script>
 
@@ -306,18 +368,21 @@
 
         });
 
-        function display(manifest, callback) {
+        function display(manifest, id, callback) {
 
             var element = document.getElementById("template");
 
-            console.log("im here b: " + JSON.stringify(manifest));
+            console.log("im here b: " + id, callback);
 
             var template = element.text;
 
             var cardValue = template.replace(/<%=callback%>/g, callback).
+            replace(/<%=id%>/g, id).
             replace(/<%=image%>/g, manifest.path + "/" + manifest.image + "?scope=manifest").
             replace(/<%=label%>/g, manifest.label).
             replace(/<%=view%>/g, "cardbox");
+
+            console.log(cardValue);
 
             var card = document.getElementById("cardbox");
 
@@ -325,57 +390,49 @@
 
         }
 
-        function displayDetails(id, manifestId, view) {
+        function displayDetails(id, view) {
+
+            console.log(id, view);
+
             var element = document.getElementById("view");
             var template = element.text;
             var entry = parseInt(id);
-            var repository = manifests[parseInt(repositoryId)];
+            var repository = manifests[entry];
             var description = "";
 
-            for (var line in repository[entry].description) {
-                description += repository[entry].description[line];
+            for (var line in manifests[entry].description) {
+                description += manifests[entry].description[line];
             }
 
-            var html = template.replace(/<%=name%>/g, repository[entry].label).
+            var html = template.replace(/<%=name%>/g, manifests[entry].label).
             replace(/<%=description%>/g, description);
 
-            if ('display' in repository[entry]) {
-                html = html.replace(/<%=display%>/g, repository[entry].display.image);
-                html = html.replace(/<%=width%>/g, repository[entry].display.width);
-                html = html.replace(/<%=height%>/g, repository[entry].display.height);
-                html = html.replace(/<%=border%>/g, repository[entry].display.border);
-                html = html.replace(/<%=margin%>/g, repository[entry].display.margin);
+            if ('display' in manifests[entry]) {
+                html = html.replace(/<%=display%>/g, manifests[entry].display.image + "?scope=manifest");
+                html = html.replace(/<%=width%>/g, manifests[entry].display.width);
+                html = html.replace(/<%=height%>/g, manifests[entry].display.height);
+                html = html.replace(/<%=border%>/g, manifests[entry].display.border);
+                html = html.replace(/<%=margin%>/g, manifests[entry].display.margin);
             }
 
             var notes = "";
 
-            if ('notes' in repository[entry]) {
-                for (var note in repository[entry].notes) {
-                    notes += repository[entry].notes[note];
+            if ('notes' in manifests[entry]) {
+                for (var note in manifests[entry].notes) {
+                    notes += manifests[entry].notes[note];
                 }
 
             }
 
             html = html.replace(/<%=notes%>/g, notes);
 
+            console.log(html);
+
             var details = document.getElementById("details");
 
             details.innerHTML = html;
 
-            var download = document.getElementById("download");
-            var show = document.getElementById("show");
-
-            show.style.display = 'none';
-            download.style.display = 'none';
-
-            document.getElementById("actions").style.display = "inline-block";
-
-            var elements = document.getElementsByClassName("card");
-            for (var element = 0; element < elements.length; element++) {
-                elements[element].style.cssText = "";
-            }
-
-            document.getElementById(`card-${view}-${repositoryId}-${id}`).style.cssText =
+            document.getElementById(`card-${view}-${id}`).style.cssText =
                 "color:red; background-color:rgb(206, 255, 206);";
 
         }
@@ -411,7 +468,7 @@
 
             for (var manifest in manifests) {
                 console.log(manifests[manifest]);
-                display(manifests[manifest], "displayDetails");
+                display(manifests[manifest], manifest, "displayDetails");
             }
 
             document.getElementById('cards').style.display = "inline-block";
@@ -439,6 +496,10 @@
         <div id="cardbox" class="cardbox"> </div>
     </div>
     <div id="summary" style="position:absolute; top: 70px; bottom:10px; width:290px; right:10px; border:1px solid rgba(0,0,0,0.2);	background-color:rgb(255, 255, 255);">
+        <div style="position:absolute; top: 0px; bottom:0px; left:0px; right:0px; padding:5px">
+            <div id="details" style="position:absolute; top:0px; bottom:50px; left:0px; right:0px;">
+            </div>
+        </div>
     </div>
     <div class="model" id="help-dialog" style="display:none">
         <div style="position:absolute; padding:120px; top:0px; bottom:0px; left:0px; right:0px;">

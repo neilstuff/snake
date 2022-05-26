@@ -63,16 +63,64 @@ function createWindow() {
 
 app.on('ready', () => {
 
-    protocol.registerBufferProtocol('html', function(request, callback) {
+    protocol.registerBufferProtocol('html', async function(request, callback) {
+
+        function getMember(filename, member) {
+
+            return new Promise(async(accept, reject) => {
+                fs.readFile(filename, async function(err, data) {
+
+                    function getContent(data, member) {
+
+                        return new Promise(async(accept, reject) => {
+                            var zipFile = new JSZip();
+                            var content = null;
+
+                            zipFile.loadAsync(data).then(async function(zip) {
+                                content = await zip.file(member).async("nodebuffer");
+                            }).then(function() {
+                                accept(content);
+                            });
+
+                        });
+
+                    }
+
+                    var content = await getContent(data, member);
+
+                    accept(content);
+
+                    if (err) {
+
+                        reject(err);
+                    }
+
+                });
+
+            });
+
+        }
+
         let pathName = (new URL(request.url).pathname).substring(os.platform() == 'win32' ? 1 : 0);
         let extension = path.extname(pathName);
         let searchParams = (new URL(request.url).searchParams)
 
-        console.log(searchParams);
-
         if (searchParams && searchParams.get('scope')) {
-            console.log("im here b");
-            console.log(searchParams.get('scope'));
+            console.log(pathName, searchParams.get('scope'));
+
+            var fileparts = pathName.split(".zip");
+
+            var directory = fileparts[0].split("/").pop();
+
+            fileparts[0] = fileparts[0] + ".zip";
+            fileparts[1] = directory + "/.manifest" + fileparts[1];
+
+            console.log(fileparts, mime.getType(path.extname(fileparts[1])));
+
+            var data = await getMember(fileparts[0], fileparts[1]);
+
+            return callback({ data: data, mimeType: mime.getType(extension) });
+
         } else {
             return callback({ data: fs.readFileSync(path.normalize(pathName)), mimeType: mime.getType(extension) });
         }
