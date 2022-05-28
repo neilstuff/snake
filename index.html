@@ -408,7 +408,8 @@
             replace(/<%=description%>/g, description);
 
             if ('display' in manifests[entry]) {
-                html = html.replace(/<%=display%>/g, manifests[entry].display.image + "?scope=manifest");
+                html = html.replace(/<%=display%>/g, manifests[entry].path + "/" +
+                    manifests[entry].display.image + "?scope=manifest");
                 html = html.replace(/<%=width%>/g, manifests[entry].display.width);
                 html = html.replace(/<%=height%>/g, manifests[entry].display.height);
                 html = html.replace(/<%=border%>/g, manifests[entry].display.border);
