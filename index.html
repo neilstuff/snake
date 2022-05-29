@@ -391,9 +391,6 @@
         }
 
         function displayDetails(id, view) {
-
-            console.log(id, view);
-
             var element = document.getElementById("view");
             var template = element.text;
             var entry = parseInt(id);
@@ -427,14 +424,14 @@
 
             html = html.replace(/<%=notes%>/g, notes);
 
-            console.log(html);
-
             var details = document.getElementById("details");
 
             details.innerHTML = html;
 
             document.getElementById(`card-${view}-${id}`).style.cssText =
                 "color:red; background-color:rgb(206, 255, 206);";
+
+            document.getElementById("actions").style.display = "inline-block";
 
         }
 
@@ -499,6 +496,13 @@
     <div id="summary" style="position:absolute; top: 70px; bottom:10px; width:290px; right:10px; border:1px solid rgba(0,0,0,0.2);	background-color:rgb(255, 255, 255);">
         <div style="position:absolute; top: 0px; bottom:0px; left:0px; right:0px; padding:5px">
             <div id="details" style="position:absolute; top:0px; bottom:50px; left:0px; right:0px;">
+            </div>
+            <div id="actions" style="display:none; position:absolute; height:32px; bottom:0px; left:0px; right:0px; margin:10px 10px 0px 10px; padding: 8px; border-top:1px solid rgba(0,0,0,0.2); ">
+                <span style="transform: rotate(270deg); float:right"> <a id="github" href="null" class="actions"
+                    style="cursor:pointer; width:32px; height:32px; font-size: 24px; text-decoration: none;">
+                    &#128317;
+                </a>
+                </span>
             </div>
         </div>
     </div>
