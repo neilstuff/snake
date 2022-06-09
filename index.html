@@ -333,8 +333,8 @@
 
     <script type="text/template" id="player">
         <div class="model" id="player-dialog" style="display:inline-block">
-            <div style="position:absolute; padding:120px; top:0px; bottom:0px; left:0px; right:0px; background: light-grey;">
-                <div class="modal-content" style="margin-top:20px; width:<%=width%>px; height:<%=height%>px;">
+            <div style="position:absolute; padding:120px; top:-40px; bottom:0px; left:0px; right:0px; background: light-grey;">
+                <div class="modal-content" style="margin-top:10px; width:<%=width%>px; height:<%=height%>px;">
                     <div class="modal-header " style="background-color: black ">
                         <span class="close" id="close" onclick="close_model_panel()">&times;</span>
                         <h2 id="viewer-dialog_title">
@@ -369,7 +369,6 @@
         });
 
         function play(name, url, height, width, scale) {
-
             var element = document.getElementById("player");
 
             var template = element.text;
