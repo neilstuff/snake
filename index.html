@@ -356,12 +356,12 @@
         function install_package() {
             var element = document.getElementById("package-url");
 
-            window.api.retrieve(element.value);
+            window.api.install(element.value);
 
         }
 
 
-        window.api.on('retrieve-complete', (channel, args) => {
+        window.api.on('install-complete', (channel, args) => {
             var manifest = JSON.parse(args);
 
             close_model_panel();

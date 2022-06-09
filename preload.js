@@ -11,8 +11,8 @@ contextBridge.exposeInMainWorld(
         load: () => {
             return ipcRenderer.send('load');
         },
-        retrieve: (url) => {
-            return ipcRenderer.send('retrieve', url);
+        install: (url) => {
+            return ipcRenderer.send('install', url);
         },
         on: (channel, callback) => {
             ipcRenderer.on(channel, (event, args) => {

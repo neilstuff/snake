@@ -68,7 +68,7 @@ app.on('ready', () => {
 });
 
 
-ipcMain.on('retrieve', function(event, arg) {
+ipcMain.on('install', function(event, arg) {
     var data = [];
     var zipfile = path.basename(new URL(arg).pathname);
     var content = "";
@@ -106,7 +106,7 @@ ipcMain.on('retrieve', function(event, arg) {
                     recursive: true
                 }, (err) => {
                     if (err) {
-                        event.sender.send('retrieve-complete', err);
+                        event.sender.send('install-complete', err);
                         console.log("error occurred in creating new directory", err);
                         return;
                     }
@@ -122,7 +122,7 @@ ipcMain.on('retrieve', function(event, arg) {
 
                 });
 
-                event.sender.send('retrieve-complete', content);
+                event.sender.send('install-complete', content);
 
             }).then(function(text) {});
 
