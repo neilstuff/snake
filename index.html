@@ -368,17 +368,54 @@
 
         });
 
+        function play(name, url, height, width, scale) {
+
+            var element = document.getElementById("player");
+
+            var template = element.text;
+            var adjustment = parseFloat(scale);
+            var adjustedWidth = parseInt(width) * adjustment
+            var adjustedHeight = parseInt(height) * adjustment
+
+            var viewportWidth = parseInt(width) - 30;
+            var viewportHeight = parseInt(height) - 70;
+            var marginTop = 0;
+            var marginLeft = 0;
+
+            if (adjustment != 1.0) {
+                marginTop = (height - adjustedHeight) * scale;
+                marginLeft = (width - adjustedWidth) * scale;
+
+                marginTop -= 15;
+                adjustedHeight += 30;
+
+            }
+
+            console.log(url);
+
+            var html = template.replace('<%=url%>', url).
+            replace('<%=title%>', name).
+            replace('<%=width%>', adjustedWidth).
+            replace('<%=height%>', adjustedHeight).
+            replace('<%=viewport-width%>', viewportWidth).
+            replace('<%=viewport-height%>', viewportHeight).
+            replace('<%=scale%>', parseFloat(scale)).
+            replace('<%=margin-top%>', '-' + marginTop).
+            replace('<%=margin-left%>', '-' + marginLeft);
+
+            document.getElementById('viewer').innerHTML = html;
+
+
+        }
+
         function display(manifest, id, callback) {
 
             var element = document.getElementById("template");
-
-            console.log("im here b: " + id, callback);
-
             var template = element.text;
 
             var cardValue = template.replace(/<%=callback%>/g, callback).
             replace(/<%=id%>/g, id).
-            replace(/<%=image%>/g, manifest.path + "/" + manifest.image + "?scope=manifest").
+            replace(/<%=image%>/g, manifest.manifest + "/" + manifest.image).
             replace(/<%=label%>/g, manifest.label).
             replace(/<%=view%>/g, "cardbox");
 
@@ -405,8 +442,8 @@
             replace(/<%=description%>/g, description);
 
             if ('display' in manifests[entry]) {
-                html = html.replace(/<%=display%>/g, manifests[entry].path + "/" +
-                    manifests[entry].display.image + "?scope=manifest");
+                html = html.replace(/<%=display%>/g, manifests[entry].manifest + "/" +
+                    manifests[entry].display.image);
                 html = html.replace(/<%=width%>/g, manifests[entry].display.width);
                 html = html.replace(/<%=height%>/g, manifests[entry].display.height);
                 html = html.replace(/<%=border%>/g, manifests[entry].display.border);
@@ -432,6 +469,20 @@
                 "color:red; background-color:rgb(206, 255, 206);";
 
             document.getElementById("actions").style.display = "inline-block";
+
+            console.log(manifests[entry]);
+
+            var play = document.getElementById("play");
+            var url = manifests[entry]['url'].replaceAll("\\", "\\\\");
+
+            play.href = `javascript:play("${manifests[entry]['label']}", ` +
+                `"${url}", ` +
+                `"${manifests[entry]['play']['size']['height']}", ` +
+                `"${manifests[entry]['play']['size']['width']}", ` +
+                `"${manifests[entry]['play']['scale']}")`;
+            console.log(play.href);
+
+            window.localStorage.setItem("test", "test");
 
         }
 
@@ -498,7 +549,7 @@
             <div id="details" style="position:absolute; top:0px; bottom:50px; left:0px; right:0px;">
             </div>
             <div id="actions" style="display:none; position:absolute; height:32px; bottom:0px; left:0px; right:0px; margin:10px 10px 0px 10px; padding: 8px; border-top:1px solid rgba(0,0,0,0.2); ">
-                <span style="transform: rotate(270deg); float:right"> <a id="github" href="null" class="actions"
+                <span style="transform: rotate(270deg); float:right"> <a id="play" href="null" class="actions"
                     style="cursor:pointer; width:32px; height:32px; font-size: 24px; text-decoration: none;">
                     &#128317;
                 </a>
