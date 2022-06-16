@@ -79,16 +79,16 @@ ipcMain.on('install', function(event, arg) {
         });
 
         response.on('end', function() {
-            function getContent(zip) {
+
+            function expand(dir, zip) {
 
                 return new Promise(async(accept, reject) => {
 
                     zip.forEach(async function(relativePath, zipEntry) {
+                        var content = await zip.file(zipEntry.name).async("nodebuffer");
+                        var dest = path + zipEntry.name;
 
-                        if (zipEntry.name.endsWith("manifest.json")) {
-                            content = await zipEntry.async("string");
-                            accept(content);
-                        }
+                        fs.writeFileSync(dest, content);
 
                     })
 
@@ -102,7 +102,6 @@ ipcMain.on('install', function(event, arg) {
                 var dir = path.join(__dirname, 'packages');
 
                 fs.mkdirSync(dir, {
-
                     recursive: true
                 }, (err) => {
                     if (err) {
@@ -112,7 +111,7 @@ ipcMain.on('install', function(event, arg) {
                     }
                 });
 
-                var content = await getContent(zip);
+                var content = await expand(dir, zip);
 
                 fs.writeFile(path.join(dir, zipfile), buffer, "binary", function(err) {
 
@@ -122,7 +121,7 @@ ipcMain.on('install', function(event, arg) {
 
                 });
 
-                event.sender.send('install-complete', content);
+                event.sender.send('install-complete', 'ok');
 
             }).then(function(text) {});
 
