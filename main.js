@@ -84,13 +84,48 @@ ipcMain.on('install', function(event, arg) {
 
                 return new Promise(async(accept, reject) => {
 
+                    function createDir(dir) {
+
+                        return new Promise(async(accept, reject) => {
+
+                            fs.mkdirSync(dir, {
+                                recursive: true
+                            }, (err) => {
+                                if (err) {
+                                    reject(dir);
+                                    return;
+                                } else {
+                                    accept(dir)
+                                }
+                            });
+
+                        })
+
+                    }
+
+                    const files = zip.folder("/");
+
+                    console.log(files);
+
                     zip.forEach(async function(relativePath, zipEntry) {
-                        var content = await zip.file(zipEntry.name).async("nodebuffer");
-                        var dest = path + zipEntry.name;
+                        var dest = path.join(dir, zipEntry.name);
 
-                        fs.writeFileSync(dest, content);
+                        console.log(relativePath);
 
-                    })
+                        if (zipEntry.dir) {
+                            console.log("Dir:", zipEntry.name);
+
+                            await createDir(dest);
+                        } else {
+                            var content = await zip.file(zipEntry.name).async("nodebuffer");
+                            console.log("Writing:", zipEntry.name);
+
+                            fs.writeFileSync(dest, content);
+                        }
+
+                    });
+
+                    accept("complete");
 
                 });
 
@@ -111,8 +146,6 @@ ipcMain.on('install', function(event, arg) {
                     }
                 });
 
-                var content = await expand(dir, zip);
-
                 fs.writeFile(path.join(dir, zipfile), buffer, "binary", function(err) {
 
                     if (err) {
@@ -122,6 +155,8 @@ ipcMain.on('install', function(event, arg) {
                 });
 
                 event.sender.send('install-complete', 'ok');
+
+                await expand(dir, zip);
 
             }).then(function(text) {});
 

@@ -360,9 +360,7 @@
 
         }
 
-
         window.api.on('install-complete', (channel, args) => {
-            var manifest = JSON.parse(args);
 
             close_model_panel();
 
@@ -403,7 +401,6 @@
             replace('<%=margin-left%>', '-' + marginLeft);
 
             document.getElementById('viewer').innerHTML = html;
-
 
         }
 
@@ -511,8 +508,6 @@
 
         window.api.on('load-complete', (channel, args) => {
             manifests = JSON.parse(args);
-
-            console.log(args);
 
             for (var manifest in manifests) {
                 console.log(manifests[manifest]);
