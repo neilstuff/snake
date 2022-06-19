@@ -281,7 +281,7 @@
     </style>
 
     <script type="text/template" id="template">
-        <div id="card-<%=view%>-<%=id%>" class="card" onclick="<%=callback%>('<%=id%>', '<%=view%>');">
+        <div id="card-<%=view%>-<%=id%>" class="card" style="border-bottom: 3px, solid white;" onclick="<%=callback%>('<%=id%>', '<%=view%>');">
             <img src="<%=image%>"></img>
             <label value="<%=label%>"><%=label%></label>
         </div>
@@ -371,8 +371,9 @@
 
             var template = element.text;
             var adjustment = parseFloat(scale);
-            var adjustedWidth = parseInt(width) * adjustment
-            var adjustedHeight = parseInt(height) * adjustment
+
+            var adjustedWidth = parseInt(width);
+            var adjustedHeight = parseInt(height);
 
             var viewportWidth = parseInt(width) - 30;
             var viewportHeight = parseInt(height) - 70;
@@ -380,15 +381,13 @@
             var marginLeft = 0;
 
             if (adjustment != 1.0) {
-                marginTop = (height - adjustedHeight) * scale;
-                marginLeft = (width - adjustedWidth) * scale;
+                marginTop = '211';
+                marginLeft = '196';
 
-                marginTop -= 15;
-                adjustedHeight += 30;
+                adjustedWidth = adjustedWidth / 2;
+                adjustedHeight = adjustedHeight / 2 + 28;
 
             }
-
-            console.log(url);
 
             var html = template.replace('<%=url%>', url).
             replace('<%=title%>', name).
@@ -415,15 +414,13 @@
             replace(/<%=label%>/g, manifest.label).
             replace(/<%=view%>/g, "cardbox");
 
-            console.log(cardValue);
-
             var card = document.getElementById("cardbox");
 
             card.innerHTML += cardValue;
 
         }
 
-        function displayDetails(id, view) {
+        function details(id, view) {
             var element = document.getElementById("view");
             var template = element.text;
             var entry = parseInt(id);
@@ -461,12 +458,16 @@
 
             details.innerHTML = html;
 
-            document.getElementById(`card-${view}-${id}`).style.cssText =
-                "color:red; background-color:rgb(206, 255, 206);";
+            var cards = document.getElementsByClassName('card');
+
+            for (let card = 0; card < cards.length; card++) {
+                cards[card].style.borderBottom = "3px solid white";
+            }
+
+            document.getElementById(`card-${view}-${id}`).style.borderBottom =
+                "3px solid rgb(119,181,254)";
 
             document.getElementById("actions").style.display = "inline-block";
-
-            console.log(manifests[entry]);
 
             var play = document.getElementById("play");
             var url = manifests[entry]['url'].replaceAll("\\", "\\\\");
@@ -476,13 +477,7 @@
                 `"${manifests[entry]['play']['size']['height']}", ` +
                 `"${manifests[entry]['play']['size']['width']}", ` +
                 `"${manifests[entry]['play']['scale']}")`;
-            console.log(play.href);
-
-            window.localStorage.setItem("test", "test");
-
         }
-
-        document.addEventListener("DOMContentLoaded", (event) => {});
     </script>
     <script>
         function help() {
@@ -510,8 +505,7 @@
             manifests = JSON.parse(args);
 
             for (var manifest in manifests) {
-                console.log(manifests[manifest]);
-                display(manifests[manifest], manifest, "displayDetails");
+                display(manifests[manifest], manifest, "details");
             }
 
             document.getElementById('cards').style.display = "inline-block";
