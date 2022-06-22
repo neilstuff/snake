@@ -395,7 +395,7 @@
                         </h2>
                     </div>
                     <div class="modal-body" style="background: rgba(0,0,0,0.0.5); margin-top:8px; margin-left:auto; margin-right:auto;">
-                        <iframe id="player-viewer" src="<%=url%>" title="player" frameborder="0" width="<%=viewport-width%>" height="<%=viewport-height%>" style="transform:scale(<%=scale%>); margin-top:<%=margin-top%>px;  margin-left:<%=margin-left%>px;"></iframe>
+                        <iframe id="player-viewer" src="<%=url%>" title="player" frameborder="0" width="<%=viewport-width%>" height="<%=viewport-height%>" style="transform:scale(<%=scale%>) translate(<%=translate-x%>px, <%=translate-y%>px);"></iframe>
                     </div>
                 </div>
             </div>
@@ -430,15 +430,17 @@
 
             var viewportWidth = parseInt(width) - 30;
             var viewportHeight = parseInt(height) - 70;
-            var marginTop = 0;
-            var marginLeft = 0;
+            var translateX = 0;
+            var translateY = 0;
 
             if (adjustment != 1.0) {
-                marginTop = '211';
-                marginLeft = '196';
+                translateX = -(viewportWidth * adjustment + 15);
+                translateY = -(viewportHeight * adjustment + 5);
 
-                adjustedWidth = adjustedWidth / 2;
-                adjustedHeight = adjustedHeight / 2 + 28;
+                console.log(translateX, translateY)
+
+                adjustedWidth = adjustedWidth * adjustment;
+                adjustedHeight = adjustedHeight * adjustment + 28;
 
             }
 
@@ -449,8 +451,10 @@
             replace('<%=viewport-width%>', viewportWidth).
             replace('<%=viewport-height%>', viewportHeight).
             replace('<%=scale%>', parseFloat(scale)).
-            replace('<%=margin-top%>', '-' + marginTop).
-            replace('<%=margin-left%>', '-' + marginLeft);
+            replace('<%=translate-x%>', translateX).
+            replace('<%=translate-y%>', translateY);
+
+            console.log(html);
 
             document.getElementById('viewer').innerHTML = html;
 
