@@ -23,13 +23,13 @@ var mainWindow = null;
 function createWindow() {
 
     mainWindow = new BrowserWindow({
-        width: (config.mode == "debug") ? 1500 : 1000,
-        height: 700,
+        width: (config.mode == "debug") ? 1500 : 1100,
+        height: 800,
         resizable: true,
         frame: true,
         maximizable: true,
-        minHeight: 700,
-        minWidth: (config.mode == "debug") ? 1500 : 1000,
+        minHeight: 800,
+        minWidth: (config.mode == "debug") ? 1500 : 1100,
         fullscreenable: true,
         autoHideMenuBar: true,
 
