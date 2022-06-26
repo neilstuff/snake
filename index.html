@@ -369,23 +369,6 @@
         </div>
     </script>
 
-    <script type="text/template" id="pdf">
-
-        <div class="model" id="pdf-view-dialog" style="display:inline-block">
-            <div style="position:absolute; padding:120px; top:0px; bottom:0px; left:0px; right:0px;">
-                <div class="modal-content" style="margin-top:40px; width:730px; height:600px">
-                    <div class="modal-header" style="background-color: black ">
-                        <span class="close" id="close" onclick="close_model_panel()">&times;</span>
-                        <h2 id="pdf-dialog_title ">PDF Viewer</h2>
-                    </div>
-                    <div class="modal-body" style="background: rgba(0,0,0,0.0.5);">
-                        <iframe id="pdf-viewer" src="<%=file%>" title="webviewer" frameborder="0" width="700" height="540"></iframe>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </script>
-
     <script type="text/template" id="player">
         <div class="model" id="player-dialog" style="display:inline-block">
             <div style="position:absolute; padding:120px; top:-40px; bottom:0px; left:0px; right:0px; background: light-grey;">
@@ -456,9 +439,9 @@
             replace('<%=translate-x%>', translateX).
             replace('<%=translate-y%>', translateY);
 
-            console.log(html);
 
             document.getElementById('viewer').innerHTML = html;
+            document.getElementById('player-viewer').focus();
 
         }
 
