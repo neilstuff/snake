@@ -309,6 +309,36 @@
         .navbar .dropdown:hover .dropdown-content {
             display: block;
         }
+        /* disable selection */
+        
+        :not(input):not(textarea),
+        :not(input):not(textarea)::after,
+        :not(input):not(textarea)::before {
+            -webkit-user-select: none;
+            user-select: none;
+            cursor: default;
+        }
+        
+        input,
+        button,
+        textarea,
+         :focus {
+            outline: none;
+        }
+        /* disable image and anchor dragging */
+        
+        a:not([draggable=true]),
+        img:not([draggable=true]) {
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+        
+        a[href^="http://"],
+        a[href^="https://"],
+        a[href^="ftp://"] {
+            -webkit-user-drag: auto;
+            user-drag: auto;
+        }
         
          ::-webkit-scrollbar-track:vertical {
             width: 12px;
@@ -542,6 +572,10 @@
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", (event) => {
+
+            document.addEventListener('dragover', event => event.preventDefault());
+            document.addEventListener('drop', event => event.preventDefault());
+
             window.api.load();
 
         });
