@@ -1,7 +1,7 @@
 {
-    "name": "desktop-stuffer",
+    "name": "snake",
     "version": "1.0.0",
-    "description": "Simple Desktop",
+    "description": "Snake",
     "main": "main.js",
     "scripts": {
         "pack": "electron-builder --dir",
@@ -23,7 +23,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/thesourorange/neilstuff/desktop-stuffer.git"
+        "url": "git+https://github.com/thesourorange/neilstuff/snake.git"
     },
     "keywords": [
         "Electron",
@@ -32,8 +32,7 @@
     "author": "GitHub",
     "license": "CC0-1.0",
     "dependencies": {
-        "mime": "^3.0.0",
-        "jszip": "^3.9.1"
+        "mime": "^3.0.0"
     },
     "devDependencies": {
         "electron": "^19.0.4",
@@ -41,7 +40,7 @@
         "node": "^17.7.2"
     },
     "bugs": {
-        "url": "https://github.com/thesourorange/neilstuff/desktop-stuffer"
+        "url": "https://github.com/thesourorange/neilstuff/snake"
     },
-    "homepage": "https://github.com/thesourorange/neilstuff/desktop-stuffer#readme"
+    "homepage": "https://github.com/thesourorange/neilstuff/snake#readme"
 }
